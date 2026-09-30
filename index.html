@@ -1,0 +1,323 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#101413">
+  <meta name="description" content="Interactive Formal Languages and Automata Theory (FLAT) Studio: Regex to ε-NFA, DFA, and Minimized DFA with Tape Simulator and Batch Testing.">
+  <title>Forma — Automata Computation Studio</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div id="app">
+    <!-- Left Navigation Sidebar -->
+    <aside class="sidebar">
+      <a class="brand" href="#">
+        <span class="brand-mark">ƒ</span>
+        <span>forma<span class="brand-dot">.</span><small>AUTOMATA STUDIO</small></span>
+      </a>
+
+      <div class="side-label">WORKSPACE</div>
+      <button class="nav-item active" id="labNav">
+        <span class="nav-icon">◈</span> Automata Studio <span class="nav-count">01</span>
+      </button>
+      <button class="nav-item" id="examplesNav">
+        <span class="nav-icon">▤</span> Example Patterns
+      </button>
+
+      <div class="sidebar-meta">
+        <div class="meta-block">
+          <span class="meta-label">ALGORITHMS</span>
+          <span class="meta-val">Thompson's NFA</span>
+          <span class="meta-val">Subset Construction</span>
+          <span class="meta-val">Hopcroft Minimization</span>
+        </div>
+      </div>
+
+      <div class="sidebar-bottom">
+        <div class="status-dot"></div>
+        <span>Computation Engine Online</span>
+        <span class="version">v2.0</span>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="main">
+      <!-- Top Header Bar -->
+      <header class="topbar">
+        <div class="crumb">
+          Workspace <span>/</span> <b>FLAT Computation Lab</b>
+        </div>
+        <div class="top-actions">
+          <span class="keyboard-hint"><kbd>Ctrl</kbd> + <kbd>Enter</kbd> <i>Generate</i></span>
+          <button class="icon-button" id="examplesTopBtn" onclick="document.querySelector('#modal').hidden = false" title="Browse Examples">▤</button>
+          <span class="avatar">FLAT</span>
+        </div>
+      </header>
+
+      <!-- Hero Header -->
+      <section class="page-head">
+        <div>
+          <div class="eyebrow">
+            <span class="eyebrow-line"></span> FORMAL LANGUAGES & AUTOMATA THEORY
+          </div>
+          <h1>From regular expression<br>to <em>state machine.</em></h1>
+          <p class="intro">
+            Interactive suite for converting regular expressions into <b>ε-NFA</b>, <b>DFA</b>, and <b>Minimized DFA</b>.<br>
+            Inspect step-by-step subset derivations, drag states dynamically, and simulate string execution across tapes.
+          </p>
+        </div>
+
+        <div class="hero-art" aria-hidden="true">
+          <div class="orbit orbit-a"></div>
+          <div class="orbit orbit-b"></div>
+          <div class="orbit orbit-c"></div>
+          <div class="hero-core">ƒ</div>
+          <span class="orbit-node n1">q₀</span>
+          <span class="orbit-node n2">ε</span>
+          <span class="orbit-node n3">Σ</span>
+          <span class="orbit-node n4">*</span>
+          <span class="hero-caption">STATE SPACE · DYNAMIC</span>
+        </div>
+      </section>
+
+      <!-- Section 1: Regex Builder -->
+      <section class="builder card">
+        <div class="section-top">
+          <div>
+            <div class="section-kicker">01 <span>·</span> REGULAR LANGUAGE SPECIFICATION</div>
+            <h2>Regular Expression Input</h2>
+          </div>
+          <div class="builder-actions">
+            <button class="text-button" id="clearBtn">Clear <span>✕</span></button>
+          </div>
+        </div>
+
+        <div class="input-wrap">
+          <span class="input-prefix">/</span>
+          <input id="regexInput" value="(a|b)*abb" spellcheck="false" aria-label="Regular expression" placeholder="e.g. (a|b)*abb, a+, a(b)?, 1*(01*01*)*">
+          <span class="input-suffix">/</span>
+          <button class="generate-btn" id="generateBtn">
+            <span>Synthesize Automata</span>
+            <b>↗</b>
+          </button>
+        </div>
+
+        <div class="syntax-row">
+          <span class="syntax-label">SUPPORTED OPERATORS</span>
+          <code>a–z, A–Z, 0–9</code>
+          <code>| (Union)</code>
+          <code>· (Concat)</code>
+          <code>* (Kleene Star)</code>
+          <code>+ (Plus: 1+)</code>
+          <code>? (Optional: 0/1)</code>
+          <code>ε, eps, λ (Epsilon)</code>
+          <code>( ) Grouping</code>
+        </div>
+
+        <div id="error" class="error" hidden></div>
+      </section>
+
+      <!-- Section 2: Interactive Automata Visualizer -->
+      <section class="automata-section card">
+        <div class="section-top">
+          <div>
+            <div class="section-kicker">02 <span>·</span> STATE TRANSITION GRAPH</div>
+            <div class="view-header-group">
+              <h2>Automaton Topology</h2>
+              <div class="automata-tab-group" role="tablist">
+                <button class="automata-tab-btn" data-view="nfa">ε-NFA <small>(Thompson)</small></button>
+                <button class="automata-tab-btn active" data-view="dfa">DFA <small>(Subset)</small></button>
+                <button class="automata-tab-btn" data-view="min_dfa">Minimized DFA <small>(Hopcroft)</small></button>
+              </div>
+            </div>
+          </div>
+
+          <div class="graph-toolbar">
+            <label class="trap-label" title="Show explicit trap / dead state in DFA">
+              <input type="checkbox" id="trapToggle"> Trap state
+            </label>
+            <div class="button-group">
+              <button class="tool-btn" id="exportSvgBtn" title="Export as SVG vector">SVG ⭳</button>
+              <button class="tool-btn" id="exportPngBtn" title="Export as PNG image">PNG ⭳</button>
+              <button class="tool-btn" id="copyLatexBtn" title="Copy LaTeX tabular code">LaTeX ⎘</button>
+              <button class="tool-btn" id="copyMermaidBtn" title="Copy Mermaid diagram">Mermaid ⎘</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="graph-container">
+          <div class="graph-wrap" id="graphWrap">
+            <div class="graph-grid"></div>
+            <svg id="graph" role="img" aria-label="Generated interactive finite automaton graph"></svg>
+            
+            <div class="graph-controls">
+              <button id="zoomOut" aria-label="Zoom out" title="Zoom out">−</button>
+              <span id="zoomLabel">100%</span>
+              <button id="zoomIn" aria-label="Zoom in" title="Zoom in">+</button>
+              <button id="resetView" aria-label="Reset view" title="Reset layout and zoom">⟳</button>
+            </div>
+
+            <div class="graph-legend">
+              <span><i class="legend-start"></i> Initial State (q₀)</span>
+              <span><i class="legend-accept"></i> Accepting State (Double Ring)</span>
+              <span><i class="legend-drag"></i> Drag nodes to customize layout</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="graph-foot">
+          <div class="foot-stats">
+            <span class="stat-item"><i class="live-dot"></i> Type: <b id="automataTypeBadge">DFA</b></span>
+            <span class="stat-item">States: <b id="stateCount">0</b></span>
+            <span class="stat-item reduction-item" id="reductionBadge" hidden></span>
+          </div>
+          <span class="foot-tip">💡 Click and drag any state bubble to rearrange graph layout</span>
+        </div>
+      </section>
+
+      <!-- Section 3: Multi-Tab Computation & Simulation Studio -->
+      <section class="analysis-section card">
+        <div class="tab-nav-bar">
+          <button class="tab-nav-btn active" data-tab="simulator">
+            <span class="tab-icon">⚡</span> Step-by-Step Simulator & Tape
+          </button>
+          <button class="tab-nav-btn" data-tab="batch">
+            <span class="tab-icon">🧪</span> Batch Test Suite
+          </button>
+          <button class="tab-nav-btn" data-tab="formal">
+            <span class="tab-icon">📐</span> Formal 5-Tuple Definition (M)
+          </button>
+          <button class="tab-nav-btn" data-tab="table">
+            <span class="tab-icon">📊</span> Transition Table & Subsets
+          </button>
+        </div>
+
+        <!-- Tab 1: Step-by-Step Simulator -->
+        <div class="bottom-tab-pane" id="tab-simulator">
+          <div class="sim-controls-grid">
+            <div class="sim-input-col">
+              <label class="input-label" for="testInput">TEST STRING INPUT</label>
+              <div class="test-input-wrap">
+                <input id="testInput" value="aabb" spellcheck="false" placeholder="Enter test string (e.g. aabb, 1010)" aria-label="Test string">
+                <button class="primary-btn" id="runBtn">Load String <span>→</span></button>
+              </div>
+
+              <!-- Interactive Tape Visualizer -->
+              <div class="tape-section">
+                <div class="tape-header">
+                  <span class="tape-label">INPUT TAPE & READ HEAD</span>
+                  <span class="tape-head-symbol">▼</span>
+                </div>
+                <div class="tape-container" id="tapeContainer"></div>
+              </div>
+            </div>
+
+            <div class="sim-playback-col">
+              <div class="playback-bar">
+                <button class="pb-btn" id="stepResetBtn" title="First Step">⏮</button>
+                <button class="pb-btn" id="stepPrevBtn" title="Step Back">◀</button>
+                <button class="pb-btn pb-play" id="playBtn" title="Play / Pause"><span>▶</span> Play</button>
+                <button class="pb-btn" id="stepNextBtn" title="Step Forward">▶</button>
+                <button class="pb-btn" id="stepEndBtn" title="Last Step">⏭</button>
+
+                <div class="speed-box">
+                  <label for="simSpeed">Speed:</label>
+                  <select id="simSpeed">
+                    <option value="1200">0.5x (Slow)</option>
+                    <option value="700" selected>1.0x (Normal)</option>
+                    <option value="350">2.0x (Fast)</option>
+                  </select>
+                </div>
+
+                <span class="step-counter" id="stepCountLabel">Step 0 / 0</span>
+              </div>
+
+              <!-- Result Banner -->
+              <div class="result-box idle" id="resultBox">
+                <span class="result-symbol">◉</span>
+                <div class="result-text">
+                  <b id="resultTitle">Ready to simulate</b>
+                  <span id="resultDetail">Step through the input or hit Play to observe state transitions.</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Execution Path Trace -->
+          <div class="trace-section">
+            <div class="trace-label">
+              <span>STATE-BY-STATE EXECUTION TRACE</span>
+            </div>
+            <div id="trace" class="trace">
+              <span class="trace-empty">State transitions will appear here during execution.</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab 2: Batch Test Suite -->
+        <div class="bottom-tab-pane" id="tab-batch" hidden>
+          <div class="batch-layout">
+            <div class="batch-sidebar">
+              <h3>Test Inputs Suite</h3>
+              <p class="batch-desc">Enter strings to test (one per line). Empty lines test the empty string ε.</p>
+              
+              <div class="add-batch-row">
+                <input id="addBatchInput" placeholder="Add test string...">
+                <button id="addBatchBtn" class="small-btn">Add</button>
+              </div>
+
+              <textarea id="batchTextarea" rows="8" spellcheck="false" placeholder="abb&#10;aabb&#10;babb&#10;aa&#10;b"></textarea>
+              <button id="runBatchBtn" class="primary-btn full-width">Evaluate All Strings</button>
+            </div>
+
+            <div class="batch-results-col">
+              <div class="batch-results-header">
+                <h3>Evaluation Results</h3>
+                <div class="batch-stats" id="batchStats"></div>
+              </div>
+              <div class="batch-table-wrap" id="batchResultsTable"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab 3: Formal 5-Tuple Definition -->
+        <div class="bottom-tab-pane" id="tab-formal" hidden>
+          <div id="formalMathBox"></div>
+        </div>
+
+        <!-- Tab 4: Transition & Derivation Table -->
+        <div class="bottom-tab-pane" id="tab-table" hidden>
+          <div class="table-wrap" id="tableWrap"></div>
+        </div>
+      </section>
+
+      <!-- Footer -->
+      <footer>
+        <span>FORMA COMPUTATION STUDIO <i>·</i> FORMAL LANGUAGES & AUTOMATA THEORY</span>
+        <span>EPSILON-NFA · DFA · HOPCROFT MINIMIZATION <b>✳</b></span>
+      </footer>
+    </main>
+
+    <!-- Examples Modal -->
+    <div class="modal-backdrop" id="modal" hidden>
+      <div class="modal card">
+        <div class="section-top">
+          <div>
+            <div class="section-kicker">PATTERNS & EXAMPLES CATALOG</div>
+            <h2>Select a Regular Language</h2>
+          </div>
+          <button class="icon-button" id="closeModal">✕</button>
+        </div>
+        <p class="modal-copy">Choose a classic textbook regular expression or compiler lexing pattern to explore its machine.</p>
+        <div id="exampleList" class="example-grid"></div>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>
