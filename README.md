@@ -1,8 +1,8 @@
+> 🌐 **Live demo:** [Open Forma on GitHub Pages](https://vedha-333.github.io/Forma-Computation-Automata-Studio-FLAT-Micro-Project-/)
+
 # Forma — Computation & Automata Studio (FLAT Micro Project)
 
 An interactive, web-based Formal Languages & Automata Theory (FLAT) learning laboratory for regular expressions, finite state automata, and step-by-step tape execution.
-
-> 🌐 **Live demo:** [Open Forma on GitHub Pages](https://vedha-333.github.io/Forma-Computation-Automata-Studio-FLAT-Micro-Project-/)
 
 ---
 
