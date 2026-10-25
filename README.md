@@ -2,6 +2,8 @@
 
 An interactive, web-based Formal Languages & Automata Theory (FLAT) learning laboratory for regular expressions, finite state automata, and step-by-step tape execution.
 
+> 🌐 **Live demo:** [Open Forma on GitHub Pages](https://vedha-333.github.io/Forma-Computation-Automata-Studio-FLAT-Micro-Project-/)
+
 ---
 
 ## 🌟 Key Features
@@ -41,8 +43,8 @@ An interactive, web-based Formal Languages & Automata Theory (FLAT) learning lab
 ### Installation
 ```bash
 # Clone repository
-git clone <repo-url>
-cd FLAT_Micro_project
+git clone https://github.com/vedha-333/Forma-Computation-Automata-Studio-FLAT-Micro-Project-.git
+cd Forma-Computation-Automata-Studio-FLAT-Micro-Project-
 
 # Install dependencies
 npm install
@@ -53,14 +55,18 @@ npm run dev
 
 Visit `http://localhost:5173` in your browser.
 
+Each push to `main` builds and deploys the site to GitHub Pages.
+
 ---
 
 ## 📁 Project Architecture
 
 ```
-FLAT_Micro_project/
+Forma-Computation-Automata-Studio-FLAT-Micro-Project-/
+├── .github/workflows/deploy.yml # Build and deploy workflow
 ├── index.html            # Main HTML layout & application shell
 ├── package.json          # Project configuration & scripts (Vite)
+├── vite.config.js         # Relative asset paths for GitHub Pages
 ├── src/
 │   ├── core/
 │   │   ├── regex.js      # Lexer, parser & Shunting-Yard postfix converter
